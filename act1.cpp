@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <algorithm>
+#include <filesystem>
 
 // Función para calcular el reverso complementario de un k-mer
 std::string reverseComplement(const std::string& kmer) {
