@@ -110,7 +110,7 @@ int main(int argc, char* argv[]) {
     }
 
 
-    double phi = 0.000022; //phi para sacar los HH
+    double phi = 0.000022; //phi para sacar los HH (bueno: 0.000022 con 100000 bases)
 
 
     size_t total_hh_memory = 0;
