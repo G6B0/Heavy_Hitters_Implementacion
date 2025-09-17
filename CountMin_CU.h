@@ -11,7 +11,7 @@ class CountMin_CU
     private:
     int d;
     int w;
-    std::vector<std::vector<int>> C;
+    std::vector<std::vector<uint64_t>> C;
 
     public:
     CountMin_CU(int d, int w);
