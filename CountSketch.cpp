@@ -4,9 +4,10 @@
 #include <random>
 #include <limits.h>
 #include <algorithm>
+#include "Extraccionkmer.h"
 
 
-double median(std::vector<int> m){
+double median(std::vector<uint64_t> m){
     int n = m.size();
     int mitad = n/2;
     std::nth_element(m.begin(), m.begin() + mitad, m.end());
@@ -26,7 +27,7 @@ private:
     int c = 1; //constante
     int d;
     int w;
-    std::vector<std::vector<int>> C;
+    std::vector<std::vector<uint64_t>> C;
     std::vector<int> g;
 
     std::vector<int> init_g(int tamaño){
@@ -49,7 +50,7 @@ private:
 
 public:
     CountSketch(int d, int w):
-    d(d), w(w), C(d,std::vector<int>(w)), g(init_g(d)){
+    d(d), w(w), C(d,std::vector<uint64_t>(w)), g(init_g(d)){
 
     }
     void insert(uint64_t elemento){
@@ -59,9 +60,11 @@ public:
         }
     }
     double estimar_freq(uint64_t elemento){
-        std::vector<int> estimaciones(d);
-        for (int i = 0; i < d; i++){
-            uint32_t h = murmurhash(&elemento, i) % w;
+        std::vector<uint64_t> estimaciones(d);
+        uint64_t mask = ~0b11ULL; //máscara que elimina los 2 bits menos significativos
+        uint64_t kmer = elemento & mask;
+        for (size_t i = 0; i < d; i++){
+            uint32_t h = murmurhash(&kmer, i) % w;
             estimaciones[i] = g[i]*C[i][h];
 
         }
@@ -72,15 +75,15 @@ public:
 int main(int argc, char const *argv[])
 {
     CountSketch CK(10, 300);
-
-    for(int j=0; j<100 ; j++){
-        for(int i=0; i<j; i++){
-            CK.insert(j);
-        }
+    std::string archivo_csv = "resultados_totales.csv";
+    std::vector<uint64_t> kmers = leer_kmers(archivo_csv);
+    for(size_t i=0; i < kmers.size(); i++){
+        CK.insert(kmers[i]);
     }
-    int x;
+    std::string x;
     std::cin >> x;
-    std::cout << "la frecuencia del elemento " << x << " es: " << CK.estimar_freq(x) << ".\n";
+    std::cout << "La frecuencia del elemento " << x << " es: " << CK.estimar_freq(string_to_uint64(x)) <<
+    ".\n";
 
     return 0;
 }
