@@ -62,10 +62,10 @@ public:
     double estimar_freq(uint64_t elemento){
         std::vector<uint64_t> estimaciones(d);
         uint64_t mask = ~0b11ULL; //máscara que elimina los 2 bits menos significativos
-        uint64_t kmer = elemento & mask;
         for (size_t i = 0; i < d; i++){
-            uint32_t h = murmurhash(&kmer, i) % w;
-            estimaciones[i] = g[i]*C[i][h];
+            uint32_t h = murmurhash(&elemento, i) % w;
+            uint64_t kmer = C[i][h] & mask;
+            estimaciones[i] = g[i] * kmer;
 
         }
         return median(estimaciones);
