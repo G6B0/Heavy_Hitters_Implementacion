@@ -22,7 +22,6 @@ int main (int argc, char *argv[]) {
     std::vector<uint64_t> kmers = leer_kmers(archivo_csv);
     for(size_t i=0; i < kmers.size(); i++){
         TW.insert(kmers[i]);
-        std::cout << "insertando kmer de la posición" << i << "\n";
     }
     std::string x;
     std::cin >> x;
