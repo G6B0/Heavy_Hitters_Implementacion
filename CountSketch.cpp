@@ -61,29 +61,12 @@ public:
     }
     double estimar_freq(uint64_t elemento){
         std::vector<uint64_t> estimaciones(d);
-        uint64_t mask = ~0b11ULL; //máscara que elimina los 2 bits menos significativos
         for (size_t i = 0; i < d; i++){
             uint32_t h = murmurhash(&elemento, i) % w;
-            uint64_t kmer = C[i][h] & mask;
+            uint64_t kmer = C[i][h];
             estimaciones[i] = g[i] * kmer;
 
         }
         return median(estimaciones);
     }
 };
-
-int main(int argc, char const *argv[])
-{
-    CountSketch CK(10, 300);
-    std::string archivo_csv = "resultados_totales.csv";
-    std::vector<uint64_t> kmers = leer_kmers(archivo_csv);
-    for(size_t i=0; i < kmers.size(); i++){
-        CK.insert(kmers[i]);
-    }
-    std::string x;
-    std::cin >> x;
-    std::cout << "La frecuencia del elemento " << x << " es: " << CK.estimar_freq(string_to_uint64(x)) <<
-    ".\n";
-
-    return 0;
-}

@@ -23,10 +23,9 @@ void CountMin_CU::insertCMin(uint64_t elemento){
 
 double CountMin_CU::estimar_freq(uint64_t elemento) const {
     int freq_est = INT_MAX;
-    uint64_t mask = ~0b11ULL; //máscara que elimina los 2 bits menos significativos
     for(int i = 0; i < d; i++){
         uint32_t h = murmurhash(&elemento, i) % w;
-        uint64_t kmer = C[i][h] & mask;
+        uint64_t kmer = C[i][h];
         if(kmer < freq_est) freq_est = kmer;
     }
     return freq_est;
