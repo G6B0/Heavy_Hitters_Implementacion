@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <utility>
 
 //Inicializa base_table (Hecho en el act1.cpp)
 void initialize_base_table(uint8_t base_to_int[128]) {
@@ -13,6 +14,15 @@ void initialize_base_table(uint8_t base_to_int[128]) {
     base_to_int['C'] = 1; base_to_int['c'] = 1; // C: 01
     base_to_int['G'] = 2; base_to_int['g'] = 2; // G: 10
     base_to_int['T'] = 3; base_to_int['t'] = 3; // T: 11
+}
+
+bool String_a_bool(const std::string& str) {
+    std::string lower = str;
+    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+    if (lower == "true") return true;
+    if (lower == "false") return false;
+
+    throw std::invalid_argument("El string no es 'true' ni 'false'");
 }
 
 // Convierte un uint64_t a un k-mer de cadena (para csv) (Hecho en el act1.cpp)
@@ -64,8 +74,8 @@ void decode_kmer_con_k(uint64_t encoded, uint64_t &kmer_val, int &k){
 }
 
 //Lee los kmers que estan guardados en el .csv (obtenidos por act1.cpp)
-std::vector<uint64_t> leer_kmers(const std::string& csv_filename){
-    std::vector<uint64_t> kmers;
+std::vector<std::pair<uint64_t,bool>> leer_kmers(const std::string& csv_filename, const std::string& nombre_genoma ){
+    std::vector<std::pair<uint64_t,bool>> kmers;
     std::ifstream file(csv_filename);
 
     if (!file.is_open()){
@@ -86,20 +96,31 @@ std::vector<uint64_t> leer_kmers(const std::string& csv_filename){
         int col_x = 0;
         std::string kmer_str;
         int k_value = 0;
+        std::string nombre_archivo;
+        bool es_hh;
 
         while (std::getline(ss, campo, ',')){
+            if (col_x == 0){
+                nombre_archivo = campo;
+                if(nombre_archivo != nombre_genoma){
+                    break;
+                }
+            }
             if (col_x == 1){
                 kmer_str = campo;
             }
             if (col_x == 3){
                 k_value = std::stoi(campo);
             }
+            if (col_x == 4){
+                es_hh = String_a_bool(campo);
+            }
             col_x++;
         }
         
         if(!kmer_str.empty() && (k_value == 21 || k_value == 31)){
             uint64_t kmer_val = string_to_uint64(kmer_str);
-            kmers.push_back(encode_kmer_con_k(kmer_val, k_value));
+            kmers.push_back({encode_kmer_con_k(kmer_val, k_value),es_hh});
         }
     }
     
