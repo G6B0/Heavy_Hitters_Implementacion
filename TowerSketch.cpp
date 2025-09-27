@@ -6,12 +6,14 @@ TowerSketch::TowerSketch(int niveles):
 }
 
 void TowerSketch::tower_create(int niveles){
-    int j = 2;
+    int j = 5000;
     Tower.clear();
     Tower.reserve(niveles);
     for(int i = 0; i < niveles; i++){
-        Tower.emplace_back(5,j);
-        j *= 2; 
+        Tower.emplace_back(8,j);
+        if(i > 0){
+            j = j * 2;
+        }
     }
 }
     
@@ -30,4 +32,13 @@ double TowerSketch::estimar_freq(uint64_t elemento){
         }
     }
     return freq_est;
+}
+
+// Opción 3: Calcula el tamaño aproximado en memoria
+size_t TowerSketch::get_memory_size() const {
+    size_t total_size = sizeof(TowerSketch);
+    for(const auto& cm : Tower) {
+        total_size += cm.get_memory_size(); // Asumiendo que CountMin_CU tiene esta función
+    }
+    return total_size;
 }

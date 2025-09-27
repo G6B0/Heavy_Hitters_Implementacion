@@ -12,7 +12,8 @@ class TowerSketch
     public:
         TowerSketch(int niveles);
         void insert(uint64_t elemento);
-        double estimar_freq(uint64_t elemento);   
+        double estimar_freq(uint64_t elemento);
+        size_t get_memory_size() const;
 };
 
 #endif
