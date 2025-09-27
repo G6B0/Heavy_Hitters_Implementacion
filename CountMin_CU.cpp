@@ -1,5 +1,6 @@
 #include "CountMin_CU.h"
-
+#include <cstdint>
+#include "murmurhash32.hpp"
 
 CountMin_CU::CountMin_CU(int d,int w):
 d(d), w(w), C(d,std::vector<uint64_t>(w)){}
@@ -31,5 +32,13 @@ double CountMin_CU::estimar_freq(uint64_t elemento) const {
     return freq_est;
 }
 
-
-
+size_t CountMin_CU::get_memory_size() const {
+    size_t total_size = 0;
+    
+    
+    total_size += sizeof(CountMin_CU);
+    total_size += d * w * sizeof(uint64_t);
+    total_size += d * sizeof(std::vector<uint64_t>);
+    
+    return static_cast<double>(total_size) / (1024.0 * 1024.0);
+}

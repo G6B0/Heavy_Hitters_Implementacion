@@ -1,7 +1,6 @@
 #ifndef COUNTMIN_CU_H
 #define COUNTMIN_CU_H
 
-#include "murmurhash32.hpp"
 #include <vector>
 #include <cstdint>
 #include <climits>
@@ -18,6 +17,7 @@ class CountMin_CU
 
     void insertCMin(uint64_t elemento);
     double estimar_freq(uint64_t elemento) const;
+    size_t get_memory_size() const;
 };
 
 #endif
